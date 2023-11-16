@@ -130,7 +130,17 @@ def get_window_id(window_name):
         return None
 
 def send_keystroke_to_window(window_id, key):
-    subprocess.call(['xdotool', 'windowactivate', '--sync', window_id, 'key', key])
+    # Save the currently focused window ID
+    original_window_id = subprocess.check_output(['xdotool', 'getactivewindow']).decode().strip()
+
+    # Focus the target window, send the key, then refocus the original window
+    subprocess.call(['xdotool', 'windowfocus', window_id])
+    subprocess.call(['xdotool', 'key', '--window', window_id, key])
+    subprocess.call(['xdotool', 'windowfocus', original_window_id])
+
+# Example usage
+# send_keystroke_to_window('window_id', 'r')
+
 
 if __name__ == "__main__":
     
